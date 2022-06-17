@@ -1,0 +1,16 @@
+{
+    "name": "abdulaev_ii/test_task_fincana",
+    "autoload": {
+        "psr-4": {
+            "FincanaTest\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "midnightelf"
+        }
+    ],
+    "require": {
+        "php-di/php-di": "^6.4"
+    }
+}
