@@ -40,4 +40,12 @@ interface TransfererInterface
      */
     public function setHeader(string $header, string $val);
 
+    /**
+     * Set URL for request
+     * 
+     * @param string $url Request URL
+     * 
+     * @return self
+     */
+    public function setUrl(string $url): self;
 }
