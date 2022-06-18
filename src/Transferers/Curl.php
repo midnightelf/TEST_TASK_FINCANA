@@ -19,11 +19,6 @@ class Curl implements TransfererInterface
         $this->setDefaultOpts();
     }
 
-    public function getCurl()
-    {
-        return $this->curl;
-    }
-
     public function get()
     {
         $this->close();
