@@ -12,5 +12,8 @@
     ],
     "require": {
         "php-di/php-di": "^6.4"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "*"
     }
 }
