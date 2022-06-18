@@ -3,20 +3,33 @@
 namespace FincanaTest\Traders;
 
 use Exception;
+use FincanaTest\Helpers\PayeerHelper;
 use FincanaTest\Interfaces\TradeInterface;
 use FincanaTest\Interfaces\TransfererInterface;
 use FincanaTest\Transferers\Curl;
 
 class Payeer implements TradeInterface
 {
-    const TradeURL = 'https://payeer.com/api/trade/';
+    public const TRADE_URL = 'https://payeer.com/api/trade/';
 
-    private TransfererInterface $transferer;
+    protected TransfererInterface $transferer;
     private string $reqError;
+    private string $payeerId;
+    private string $secretKey;
 
     public function __construct(Curl $curl)
     {
         $this->transferer = $curl;
+    }
+
+    public function setPayeerId(string $id)
+    {
+        $this->payeerId = $id;
+    }
+
+    public function setSecretKey(string $key)
+    {
+        $this->secretKey = $key;
     }
 
     public function info()
@@ -60,16 +73,25 @@ class Payeer implements TradeInterface
 
     private function payeerPost(string $method, array $args = [])
     {
-        $method = $this->transferer->setUrl(self::TradeURL . $method);
+        $res = $this->transferer->setUrl(self::TRADE_URL . $method);
 
-        $args = array_merge(compact('method'), $args);
+        $args = PayeerHelper::arrayMergeWithTs(compact('method'), $args);
+        $sign = PayeerHelper::generateSign($args, $this->secretKey);
 
-        $res = $method->post($args);
+        $this->transferer->setOption(CURLOPT_POST, true);
+        $this->transferer->setHeader('APP-ID', $this->payeerId);
+        $this->transferer->setHeader('APP-SIGN', $sign);
 
-        if ($res['success'] !== true) {
-            $this->reqError = $res['error'];
+        $post = PayeerHelper::encodeArrayMerge($args['post']);
 
-            throw new Exception($res['error']['code']);
+        $res = $res->post($post);
+
+        if (!is_null($res)) {
+            if ($res['success'] !== false) {
+                $this->reqError = $res['error']['code'];
+
+                throw new Exception($this->reqError);
+            }
         }
 
         return $res;
