@@ -16,7 +16,7 @@ final class PayeerHelperTest extends TestCase
 
     protected function tearDown(): void
     {
-        $this->payeerHelper = NULL;
+        $this->payeerHelper = null;
     }
 
     public function testGenerateSignIsValid()
