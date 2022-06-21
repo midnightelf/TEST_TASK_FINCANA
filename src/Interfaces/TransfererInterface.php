@@ -24,11 +24,11 @@ interface TransfererInterface
      * Set option for request
      *
      * @param int   $option
-     * @param mixed $value
+     * @param string|array $value
      *
      * @return void
      */
-    public function setOption(int $option, mixed $value);
+    public function setOption(int $option, $value);
 
     /**
      * Set header for request

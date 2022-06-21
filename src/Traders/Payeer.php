@@ -22,12 +22,12 @@ class Payeer implements TradeInterface
         $this->transferer = $curl;
     }
 
-    public function setPayeerId(string $id)
+    public function setPayeerId(string $id): void
     {
         $this->payeerId = $id;
     }
 
-    public function setSecretKey(string $key)
+    public function setSecretKey(string $key): void
     {
         $this->secretKey = $key;
     }
@@ -85,12 +85,14 @@ class Payeer implements TradeInterface
 
         $res = $res->post($post);
 
-        if (!is_null($res)) {
-            if ($res['success'] !== false) {
-                $this->reqError = $res['error']['code'];
+        if (is_null($res)) {
+            throw new Exception('Response is NULL');
+        }
 
-                throw new Exception($this->reqError);
-            }
+        if ($res['success'] === false) {
+            $this->reqError = $res['error']['code'];
+
+            throw new Exception($this->reqError);
         }
 
         return $res;

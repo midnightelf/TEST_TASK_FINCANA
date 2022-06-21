@@ -21,27 +21,24 @@ class Curl implements TransfererInterface
 
     public function get()
     {
-        $this->close();
-
         $this->setOption(CURLOPT_POST, false);
-        $res = json_decode(curl_exec($this->curl));
+
+        $res = curl_exec($this->curl);
 
         return $this->convertResponse($res);
     }
 
     public function post($args)
     {
-        $this->close();
-
         $this->setOption(CURLOPT_POST, true);
         $this->setOption(CURLOPT_POSTFIELDS, $args);
 
-        $res = json_decode(curl_exec($this->curl));
+        $res = curl_exec($this->curl);
 
-        $this->convertResponse($res);
+        return $this->convertResponse($res);
     }
 
-    public function setOption(int $option, mixed $value): void
+    public function setOption(int $option, $value): void
     {
         curl_setopt($this->curl, $option, $value);
     }
@@ -76,21 +73,18 @@ class Curl implements TransfererInterface
         return $this;
     }
 
-    protected function close()
-    {
-        curl_close($this->curl);
-    }
-
     private function convertResponse($response)
     {
+        $response = json_decode($response, true);
+
         if (is_object($response)) {
-            return get_object_vars($response);
+            return json_encode($response);
         }
 
         return $response;
     }
 
-    private function setDefaultOpts()
+    private function setDefaultOpts(): void
     {
         $this->setOption(CURLOPT_RETURNTRANSFER, true);
         $this->setHeader('Content-Type', 'application/json');
