@@ -10,12 +10,12 @@ use FincanaTest\Transferers\Curl;
 
 class Payeer implements TradeInterface
 {
-    public const TRADE_URL = 'https://payeer.com/api/trade/';
-
     protected TransfererInterface $transferer;
+
     private string $reqError;
     private string $payeerId;
     private string $secretKey;
+    private string $tradeUrl;
 
     public function __construct(Curl $curl)
     {
@@ -30,6 +30,11 @@ class Payeer implements TradeInterface
     public function setSecretKey(string $key): void
     {
         $this->secretKey = $key;
+    }
+
+    public function setTradeUrl(string $tradeUrl): void
+    {
+        $this->tradeUrl = $tradeUrl;
     }
 
     public function info()
@@ -73,7 +78,7 @@ class Payeer implements TradeInterface
 
     private function payeerPost(string $method, array $args = [])
     {
-        $res = $this->transferer->setUrl(self::TRADE_URL . $method);
+        $res = $this->transferer->setUrl($this->tradeUrl . $method);
 
         $args = PayeerHelper::arrayMergeWithTs(compact('method'), $args);
         $sign = PayeerHelper::generateSign($args, $this->secretKey);
