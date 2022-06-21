@@ -78,7 +78,6 @@ class Payeer implements TradeInterface
         $args = PayeerHelper::arrayMergeWithTs(compact('method'), $args);
         $sign = PayeerHelper::generateSign($args, $this->secretKey);
 
-        $this->transferer->setOption(CURLOPT_POST, true);
         $this->transferer->setHeader('APP-ID', $this->payeerId);
         $this->transferer->setHeader('APP-SIGN', $sign);
 
