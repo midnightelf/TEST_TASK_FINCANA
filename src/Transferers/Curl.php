@@ -23,6 +23,7 @@ class Curl implements TransfererInterface
     {
         $this->close();
 
+        $this->setOption(CURLOPT_POST, false);
         $res = json_decode(curl_exec($this->curl));
 
         return $this->convertResponse($res);
